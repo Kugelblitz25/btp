@@ -19,8 +19,10 @@ tags:
 	- Heatmap of popularity of the room
 - Action classification into suspicious or not.
 	- Digital vault: Create a bounding box around regions and objects of interest and log all individuals who entered it.
+
 ## High Level Algorithms
 ---
+
 ### Tasks
 - [ ] Foreground separation and human object separation.
 	- [ ] MOG2
@@ -29,6 +31,8 @@ tags:
 	- [ ] RPCA
 	- [ ] Semantic Segmentation
 	- Try all the algorithms and find the most efficient and fast algorithm. We might even have to combine multiple of them to get good result.
+
+ 
 ## Low Level Algorithms
 ---
 
