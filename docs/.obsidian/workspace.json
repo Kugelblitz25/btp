@@ -69,7 +69,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "6d697c29b2be9fa7",
@@ -148,6 +149,7 @@
   "active": "99318ca7f9987dca",
   "lastOpenFiles": [
     "index.md",
+    "_config.yml",
     "notes",
     "_templates/topicNotes.md",
     "_templates/courseMain.md",
