@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "b2a5c286ff36b296",
+        "id": "a04ed6ed1340a42b",
         "type": "tabs",
         "children": [
           {
-            "id": "99318ca7f9987dca",
+            "id": "c544698b944eedfe",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "index.md",
-                "mode": "source",
+                "file": "Robust Principle Component Analysis.md",
+                "mode": "preview",
                 "source": false
               }
             }
@@ -86,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "index.md",
+                "file": "Robust Principle Component Analysis.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "index.md",
+                "file": "Robust Principle Component Analysis.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "index.md"
+                "file": "Robust Principle Component Analysis.md"
               }
             }
           }
@@ -146,9 +146,17 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "99318ca7f9987dca",
+  "active": "c544698b944eedfe",
   "lastOpenFiles": [
+    "Papers/Online_Robust_Principal_Component_Analysis_with_Change_Point_Detection.pdf",
+    "Robust Principle Component Analysis.md",
+    "Papers/Online_Tensor_Robust_Principal_Component_Analysis.pdf",
+    "Papers/Incremental_gradient_on_the_Grassmannian_for_online_foreground_and_background_separation_in_subsampled_video.pdf",
+    "Papers",
+    "New folder",
     "index.md",
+    "Robust.md",
+    "vhg.md",
     "_config.yml",
     "notes",
     "_templates/topicNotes.md",
