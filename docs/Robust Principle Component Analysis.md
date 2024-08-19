@@ -20,15 +20,15 @@ where $D$ is the original data matrix, $L$ is the low-rank matrix, $S$ is the sp
 
 The traditional RPCA algorithm requires all the frames of video at process time. But for our application we need a modified approach which can process frames incrementally that is one by one also called as Online RPCA. We currently have found three promising research papers for the same
 
-### [[Papers/Online_Robust_Principal_Component_Analysis_with_Change_Point_Detection.pdf|Online Robust Principal Component Analysis with Change Point Detection]]
+### [Online Robust Principal Component Analysis with Change Point Detection](Papers/Online_Robust_Principal_Component_Analysis_with_Change_Point_Detection.pdf)
 
 The paper "Online Robust Principal Component Analysis with Change Point Detection" introduces an efficient method called Online Moving Window Robust Principal Component Analysis (OMWRPCA) designed to handle both slowly changing and abruptly changing subspaces in high-dimensional data. Unlike traditional batch algorithms, OMWRPCA can process streaming data in real-time, making it suitable for applications such as video surveillance, anomaly detection, and network monitoring. By integrating hypothesis testing, OMWRPCA can detect change points in the underlying subspace, ensuring accurate and timely identification of significant changes in the data structure. The method has demonstrated superior performance through extensive simulations and practical applications compared to existing state-of-the-art approaches [(Wei et al., 2017)](https://arxiv.org/abs/1702.05698).
 
-### [[Papers/Incremental_gradient_on_the_Grassmannian_for_online_foreground_and_background_separation_in_subsampled_video.pdf|Incremental Gradient on the Grassmannian for Foreground and Background Separation]]
+### [Incremental Gradient on the Grassmannian for Foreground and Background Separation](Papers/Incremental_gradient_on_the_Grassmannian_for_online_foreground_and_background_separation_in_subsampled_video.pdf)
 
 The paper "Incremental Gradient on the Grassmannian for Online Foreground and Background Separation in Subsampled Video" introduces GRASTA, a robust online algorithm for subspace estimation and background-foreground separation in video streams using random subsampling. Leveraging the Grassmannian geometry, GRASTA efficiently processes video frames, achieving high separation accuracy and computation speeds, as evidenced by its ability to process video at 46.3 frames per second on standard hardware. This method significantly improves computational efficiency while maintaining robust subspace learning, which is critical for real-time video surveillance and other applications where computational resources and quick processing are essential. The algorithm's design enables it to dynamically adapt to changes in the subspace, ensuring robust performance even with highly subsampled data [(He et al., 2012)](https://typeset.io/papers/incremental-gradient-on-the-grassmannian-for-online-4kx3xddloz?utm_source=chatgpt).
 
-### [[Papers/Online_Tensor_Robust_Principal_Component_Analysis.pdf|Online Tensor Robust Principal Component Analysis]]
+### [Online Tensor Robust Principal Component Analysis](Papers/Online_Tensor_Robust_Principal_Component_Analysis.pdf)
 
 - The paper introduces an online tensor robust principal component analysis (RPCA) algorithm designed to efficiently decompose high-dimensional data into low-rank and sparse components, addressing the limitations of conventional batch processing methods.
 - The proposed algorithm is particularly beneficial for real-time applications where data arrives sequentially, such as video surveillance, by utilizing recursive approaches to manage memory and computational efficiency.

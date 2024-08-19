@@ -27,7 +27,7 @@ tags:
 	- [ ] MOG2
 	- [ ] KNN
 	- [ ] CNT
-	- [ ] [RPCA](Robust%20Principle%20Component%20Analysis.md) 
+	- [ ] [RPCA](Robust%20Principle%20Component%20Analysis) 
 	- [ ] Semantic Segmentation
 	- Try all the algorithms and find the most efficient and fast algorithm. We might even have to combine multiple of them to get good result.
 
