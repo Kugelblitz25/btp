@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "6d697c29b2be9fa7",
@@ -148,10 +147,12 @@
   },
   "active": "c544698b944eedfe",
   "lastOpenFiles": [
-    "Papers/Online_Robust_Principal_Component_Analysis_with_Change_Point_Detection.pdf",
-    "Robust Principle Component Analysis.md",
-    "Papers/Online_Tensor_Robust_Principal_Component_Analysis.pdf",
+    "_layouts/default.html",
+    "_layouts",
     "index.md",
+    "Robust Principle Component Analysis.md",
+    "Papers/Online_Robust_Principal_Component_Analysis_with_Change_Point_Detection.pdf",
+    "Papers/Online_Tensor_Robust_Principal_Component_Analysis.pdf",
     "Papers/Incremental_gradient_on_the_Grassmannian_for_online_foreground_and_background_separation_in_subsampled_video.pdf",
     "Papers",
     "New folder",
