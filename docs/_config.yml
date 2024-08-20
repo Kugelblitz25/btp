@@ -1,12 +1,7 @@
+title: Vighnesh's Notes
 markdown: kramdown
 kramdown:
-  math_engine: katex
-remote_theme: pages-themes/cayman@v0.2.0
+    math_engine: katex
+remote_theme: pages-themes/hacker@v0.2.0
 plugins:
-  - jekyll-remote-theme
-  - jekyll-katex 
-title: Techminds
-
-include:
-  - katex/katex.min.css
-  - katex/katex.min.js
+- jekyll-remote-theme
