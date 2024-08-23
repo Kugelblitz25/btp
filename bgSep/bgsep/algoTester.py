@@ -70,7 +70,7 @@ class Tester:
         f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
         accuracy = (total_tp + total_tn) / (total_tp + total_fp + total_fn + total_tn) 
 
-        return fg_mask_color, total_fp, total_fn, f1_score, accuracy
+        return fg_mask_color, precision, recall, f1_score, accuracy
     
     @staticmethod
     def load_video(video_path: str, ground_truth_path: Optional[str] = None) -> Generator[np.ndarray, None, None]:
@@ -125,7 +125,7 @@ class Tester:
              print_results: Optional[bool] = False) -> tuple[float, float, float, float]:
         video_info = self.get_video_info(video_path)
         writer = VideoWriter(output_path, video_info)
-        fp_sum, fn_sum, f1_sum, accuracy_sum, num_frames = 0, 0, 0, 0, 0
+        precision_sum, recall_sum, f1_sum, accuracy_sum, num_frames = 0, 0, 0, 0, 0
         tot_time = 0
         try:
             for frame, ground_truth in self.load_video(video_path, ground_truth_path):
@@ -133,9 +133,9 @@ class Tester:
                 fg_mask = self.apply(frame)
                 t2 = perf_counter()
                 tot_time += t2 - t1
-                fg_mask_color, fp, fn, f1, accuracy = self.compare(fg_mask, ground_truth)
-                fp_sum += fp
-                fn_sum += fn
+                fg_mask_color, precision, recall, f1, accuracy = self.compare(fg_mask, ground_truth)
+                precision_sum += precision
+                recall_sum += recall
                 f1_sum += f1
                 accuracy_sum += accuracy
                 num_frames += 1
@@ -149,8 +149,8 @@ class Tester:
             writer.close()
             cv2.destroyAllWindows()
 
-        avg_fp = fp_sum / num_frames / (video_info[0]*video_info[1]) * 100
-        avg_fn = fn_sum / num_frames / (video_info[0]*video_info[1]) * 100
+        avg_precision = precision_sum / num_frames 
+        avg_recall = recall_sum / num_frames 
         avg_f1 = f1_sum / num_frames
         avg_accuracy = accuracy_sum / num_frames
         avg_time = tot_time / num_frames
@@ -159,13 +159,13 @@ class Tester:
         if print_results:
             print()
             print("-" * 118)
-            print(f"|{'Video':^30}|{'Ground Truth':^30}|{'Avg. FP%':^10}|{'Avg. FN%':^10}|{'F1 Score':^10}|{'Accuracy':^10}|{'FPS':^10}|")
+            print(f"|{'Video':^25}|{'Ground Truth':^25}|{'Precision':^15}|{'Recall':^15}|{'F1 Score':^10}|{'Accuracy':^10}|{'FPS':^10}|")
             print("-" * 118)
-            print(f"|{video_path:^30}|{ground_truth_path:^30}|{avg_fp:^10.3f}|{avg_fn:^10.3f}|{avg_f1:^10.3f}|{avg_accuracy:^10.3f}|{avg_fps:^10.3f}|")
+            print(f"|{video_path:^25}|{ground_truth_path:^25}|{avg_precision:^15.3f}|{avg_recall:^15.3f}|{avg_f1:^10.3f}|{avg_accuracy:^10.3f}|{avg_fps:^10.3f}|")
             print("-" * 118)
             print()
 
-        return avg_fn, avg_fp, avg_f1, avg_accuracy
+        return avg_precision, avg_recall, avg_f1, avg_accuracy
 
     def __str__(self) -> str:
         return f"Tester object for {self.algorithm} algorithm."

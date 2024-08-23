@@ -70,9 +70,9 @@ python3 bgsep/algoTester.py -v input.mp4 -a KNN -o output.mp4
 python3 bgsep/algoTester.py -v videos/vid1.mp4 -gt videos/vid1-true.mp4 -a knn
 
 ----------------------------------------------------------------------------------------------------------------------
-|            Video             |         Ground Truth         | Avg. FP% | Avg. FN% | F1 Score | Accuracy |   FPS    |
+|          Video          |      Ground Truth       |   Precision   |    Recall     | F1 Score | Accuracy |   FPS    |
 ----------------------------------------------------------------------------------------------------------------------
-|       videos/vid1.mp4        |     videos/vid1-true.mp4     |  0.396   |  0.146   |  0.613   |  0.995   | 204.889  |
+|     videos/vid1.mp4     |  videos/vid1-true.mp4   |     0.656     |     0.583     |  0.613   |  0.995   | 200.615  |
 ----------------------------------------------------------------------------------------------------------------------
 
 ```
