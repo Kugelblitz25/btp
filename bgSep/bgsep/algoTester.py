@@ -42,6 +42,7 @@ class Tester:
 
     def apply(self, frame: np.ndarray) -> np.ndarray:
         fg_mask = self.bg_subtractor.apply(frame)
+        _, fg_mask = cv2.threshold(fg_mask, 10, 255, cv2.THRESH_BINARY)
         return fg_mask
     
     @staticmethod
@@ -55,7 +56,7 @@ class Tester:
         false_positives = cv2.bitwise_and(fg_mask, cv2.bitwise_not(ground_truth))
         false_negatives = cv2.bitwise_and(ground_truth, cv2.bitwise_not(fg_mask))
         true_negatives = cv2.bitwise_and(cv2.bitwise_not(fg_mask), cv2.bitwise_not(ground_truth))
-
+        
         fg_mask_color[true_positives > 0] = [0, 255, 0]
         fg_mask_color[false_positives > 0] = [255, 0, 0]
         fg_mask_color[false_negatives > 0] = [0, 0, 255]
@@ -96,6 +97,7 @@ class Tester:
                 if not ret_gt:
                     break
                 ground_truth = cv2.cvtColor(gt_frame, cv2.COLOR_BGR2GRAY)
+                _, ground_truth = cv2.threshold(ground_truth, 10, 255, cv2.THRESH_BINARY)
             else:
                 ground_truth = None
 
@@ -134,12 +136,13 @@ class Tester:
                 t2 = perf_counter()
                 tot_time += t2 - t1
                 fg_mask_color, precision, recall, f1, accuracy = self.compare(fg_mask, ground_truth)
+                output_frame = cv2.bitwise_and(frame, frame, mask = fg_mask_color[:,:,1])
                 precision_sum += precision
                 recall_sum += recall
                 f1_sum += f1
                 accuracy_sum += accuracy
                 num_frames += 1
-                writer.write(fg_mask_color)
+                writer.write(output_frame)
                 cv2.imshow('Frame', fg_mask_color)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
