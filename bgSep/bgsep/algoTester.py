@@ -20,7 +20,7 @@ class VideoWriter:
         self.frame_width, self.frame_height, self.fps = video_info
         self.out = None
         if output_path:
-            self.out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'mp4v'), self.fps, (self.frame_width, self.frame_height))
+            self.out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'mp4v'), self.fps, (self.frame_width*2, self.frame_height))
     
     def write(self, frame: np.ndarray) -> None:
         if self.out:
@@ -132,15 +132,18 @@ class Tester:
                 t1 = perf_counter()
                 fg_mask = self.apply(frame)
                 t2 = perf_counter()
-                tot_time += t2 - t1
                 fg_mask_color, precision, recall, f1, accuracy = self.compare(fg_mask, ground_truth)
+                
+                tot_time += t2 - t1
                 precision_sum += precision
                 recall_sum += recall
                 f1_sum += f1
                 accuracy_sum += accuracy
                 num_frames += 1
-                writer.write(fg_mask_color)
-                cv2.imshow('Frame', fg_mask_color)
+
+                output_frame = np.hstack([frame, fg_mask_color])
+                writer.write(output_frame)
+                cv2.imshow('Frame', output_frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
         except Exception as e:
@@ -161,7 +164,7 @@ class Tester:
             print("-" * 118)
             print(f"|{'Video':^25}|{'Ground Truth':^25}|{'Precision':^15}|{'Recall':^15}|{'F1 Score':^10}|{'Accuracy':^10}|{'FPS':^10}|")
             print("-" * 118)
-            print(f"|{video_path:^25}|{ground_truth_path:^25}|{avg_precision:^15.3f}|{avg_recall:^15.3f}|{avg_f1:^10.3f}|{avg_accuracy:^10.3f}|{avg_fps:^10.3f}|")
+            print(f"|{video_path:^25}|{ground_truth_path or '':^25}|{avg_precision:^15.3f}|{avg_recall:^15.3f}|{avg_f1:^10.3f}|{avg_accuracy:^10.3f}|{avg_fps:^10.3f}|")
             print("-" * 118)
             print()
 
