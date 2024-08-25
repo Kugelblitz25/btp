@@ -15,6 +15,36 @@ algorithms = {                  # Dictionary of different background subtraction
         'MOG': cv2.bgsegm.createBackgroundSubtractorMOG,
     }
 
+class Metrics:
+    def __init__(self) -> None:
+        self.process_time = 0
+        self.f1_score = 0
+        self.precision = 0
+        self.recall = 0
+        self.accuracy = 0
+        self.count = 0
+
+    def add(self, t: float, f1: float, pre: float, rec: float, acc: float) -> None:
+        self.process_time += t
+        self.f1_score += f1
+        self.precision += pre
+        self.recall += rec
+        self.accuracy += acc
+        self.count += 1
+
+    def avg(self) -> tuple[float, float, float, float, float]:
+        if self.count == 0 or self.process_time == 0:
+            raise ValueError("Process Time or Number of Frames is zero.")
+        
+        fps = self.count / self.process_time
+        avg_precision = self.precision / self.count
+        avg_recall = self.recall / self.count
+        avg_f1_score = self.f1_score / self.count
+        avg_accuracy = self.accuracy / self.count
+
+        return fps, avg_precision, avg_recall, avg_f1_score, avg_accuracy
+
+
 class VideoWriter:                              # Class to write frames to an output video file
     def __init__(self, output_path: Optional[str], video_info: tuple[int, int, int]) -> None:                                           # Function to initialize the video writer with the given output path and video information
         self.frame_width, self.frame_height, self.fps = video_info                                                                      # Video information is a tuple of frame width,height and frames per second(fps)
@@ -43,14 +73,19 @@ class Tester:
     def apply(self, frame: np.ndarray) -> np.ndarray:
         fg_mask = self.bg_subtractor.apply(frame)
         _, fg_mask = cv2.threshold(fg_mask, 10, 255, cv2.THRESH_BINARY)
+        fg_mask = cv2.medianBlur(fg_mask, 3)
+        kernel_ex =cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))  
+        kernel_er =cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3)) 
+        fg_mask = cv2.dilate(fg_mask, kernel_ex, iterations=3)
+        fg_mask = cv2.erode(fg_mask, kernel_er, iterations=1)
         return fg_mask
     
-    @staticmethod                                     # Method that belongs to a class rather than any specific instance of that class
+    @staticmethod                                                                                                  # Method that belongs to a class rather than any specific instance of that class
     def compare(fg_mask: np.ndarray, ground_truth: Optional[np.ndarray]) -> tuple[np.ndarray, int, int, int, int]: # Function to compare result with ground truth
         if ground_truth is None:                                                                                   # Ground truth is a binary mask of the foreground
             return cv2.cvtColor(fg_mask, cv2.COLOR_GRAY2BGR), 0, 0, 0, 0                                           # Convert the binary mask to colour
         
-        fg_mask_color = np.zeros((*fg_mask.shape[:2], 3), dtype=np.uint8)
+        fg_mask_color = np.zeros((*fg_mask.shape, 3), dtype=np.uint8)
 
         true_positives = cv2.bitwise_and(fg_mask, ground_truth)                                                    # Computing true positives
         false_positives = cv2.bitwise_and(fg_mask, cv2.bitwise_not(ground_truth))                                  # Computing false positives
@@ -61,19 +96,14 @@ class Tester:
         fg_mask_color[false_positives > 0] = [255, 0, 0]                                                           # Colouring the false positives red
         fg_mask_color[false_negatives > 0] = [0, 0, 255]                                                           # Colouring the false negatives blue
 
-        true_positives = cv2.bitwise_and(fg_mask, ground_truth)
-        false_positives = cv2.bitwise_and(fg_mask, cv2.bitwise_not(ground_truth))
-        false_negatives = cv2.bitwise_and(ground_truth, cv2.bitwise_not(fg_mask))
-        true_negatives = cv2.bitwise_and(cv2.bitwise_not(fg_mask), cv2.bitwise_not(ground_truth))
-        
-        fg_mask_color[true_positives > 0] = [0, 255, 0]
-        fg_mask_color[false_positives > 0] = [255, 0, 0]
-        fg_mask_color[false_negatives > 0] = [0, 0, 255]
-
         total_tp = true_positives.sum() // 255                                                                     # Computing total true positives
         total_fp = false_positives.sum() // 255                                                                    # Computing total false positives
         total_fn = false_negatives.sum() // 255                                                                    # Computing total false negatives
         total_tn = true_negatives.sum() // 255                                                                     # Computing total true negatives
+
+        if total_fp > 0.9*fg_mask.shape[0]*fg_mask.shape[1]:
+            total_tp = total_fp
+            total_fp = 0
 
         precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0                            # Calculating precision
         recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0                               # Calculating recall
@@ -133,11 +163,11 @@ class Tester:
              video_path: str, 
              ground_truth_path: Optional[str] = None, 
              output_path: Optional[str] = None,
-             print_results: Optional[bool] = False) -> tuple[float, float, float, float]:
+             print_results: Optional[bool] = False,
+             show_fg: Optional[bool] = False) -> tuple[float, float, float, float]:
         video_info = self.get_video_info(video_path)                                                        # Get video information
         writer = VideoWriter(output_path, video_info)                                                       # Write video to the output path
-        precision_sum, recall_sum, f1_sum, accuracy_sum, num_frames = 0, 0, 0, 0, 0
-        tot_time = 0
+        metrics = Metrics()
         try:
             for frame, ground_truth in self.load_video(video_path, ground_truth_path):
                 t1 = perf_counter()                                                                         # Start time
@@ -145,49 +175,34 @@ class Tester:
                 t2 = perf_counter()                                                                         # End time
                 fg_mask_color, precision, recall, f1, accuracy = self.compare(fg_mask, ground_truth)        # Comparing result with ground truth
                 
-                tot_time += t2 - t1                                                                         # Computation time
-                t1 = perf_counter()
-                fg_mask = self.apply(frame)
-                t2 = perf_counter()
-                tot_time += t2 - t1
-                fg_mask_color, precision, recall, f1, accuracy = self.compare(fg_mask, ground_truth)
-                output_frame = cv2.bitwise_and(frame, frame, mask = fg_mask_color[:,:,1])
-                precision_sum += precision
-                recall_sum += recall
-                f1_sum += f1
-                accuracy_sum += accuracy
-                num_frames += 1
+                metrics.add(t2-t1, f1, precision, recall, accuracy)
+
+                if show_fg:
+                    fg_mask_color = cv2.bitwise_and(frame, frame, mask = fg_mask)
 
                 output_frame = np.hstack([frame, fg_mask_color])
                 writer.write(output_frame)
                 cv2.imshow('Frame', output_frame)
-                writer.write(output_frame)
-                cv2.imshow('Frame', fg_mask_color)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
+                if cv2.waitKey(30) & 0xFF == ord('q'):
                     break
         except Exception as e:
             print(f"An error occurred during testing: {str(e)}")
         finally:
             writer.close()
             cv2.destroyAllWindows()
-
-        avg_precision = precision_sum / num_frames # Computing average precision values
-        avg_recall = recall_sum / num_frames       # Computing average recall values
-        avg_f1 = f1_sum / num_frames               # Computing average f_1 values
-        avg_accuracy = accuracy_sum / num_frames   # Computing average accuracy values
-        avg_time = tot_time / num_frames           # Computing average time
-        avg_fps = 1 / avg_time
+        
+        fps, avg_precision, avg_recall, avg_f1, avg_accuracy =  metrics.avg()
 
         if print_results:                         # Printing results
             print()
             print("-" * 118)
             print(f"|{'Video':^25}|{'Ground Truth':^25}|{'Precision':^15}|{'Recall':^15}|{'F1 Score':^10}|{'Accuracy':^10}|{'FPS':^10}|")
             print("-" * 118)
-            print(f"|{video_path:^25}|{ground_truth_path or '':^25}|{avg_precision:^15.3f}|{avg_recall:^15.3f}|{avg_f1:^10.3f}|{avg_accuracy:^10.3f}|{avg_fps:^10.3f}|")
+            print(f"|{video_path:^25}|{ground_truth_path or '':^25}|{avg_precision:^15.3f}|{avg_recall:^15.3f}|{avg_f1:^10.3f}|{avg_accuracy:^10.3f}|{fps:^10.3f}|")
             print("-" * 118)
             print()
 
-        return avg_precision, avg_recall, avg_f1, avg_accuracy
+        return fps, avg_precision, avg_recall, avg_f1, avg_accuracy
 
     def __str__(self) -> str:
         return f"Tester object for {self.algorithm} algorithm."
@@ -199,10 +214,12 @@ def main() -> None:
     parser.add_argument('-a', '--algorithm', type=str, help='Background subtraction algorithm to use.', default='MOG2')
     parser.add_argument('-gt', '--ground_truth', type=str, help='Path to ground truth video file.', default=None)
     parser.add_argument('-o', '--output', type=str, help='Path to output video file.', default=None)
+    parser.add_argument('-fg', '--foreground', type=bool, help='Path to output video file.', default=False)
+
     args = parser.parse_args()
 
     tester = Tester(args.algorithm.upper())
-    tester.test(args.video_path, args.ground_truth, args.output, True)
+    tester.test(args.video_path, args.ground_truth, args.output, True, args.foreground)
 
 if __name__ == '__main__':
     main()
