@@ -24,12 +24,28 @@ class Metrics:
         self.accuracy = 0
         self.count = 0
 
-    def add(self, t: float, f1: float, pre: float, rec: float, acc: float) -> None:
+    def score(self, t: float, fg_mask: np.ndarray, ground_truth: np.ndarray) -> None:
+        fg_mask //= 255
+        ground_truth //= 255
+
+        TP = np.bitwise_and(fg_mask, ground_truth).sum()
+        FP = np.bitwise_and(fg_mask, np.bitwise_not(ground_truth)).sum()
+        FN = np.bitwise_and(np.bitwise_not(fg_mask), ground_truth).sum()
+        TN = np.bitwise_and(np.bitwise_not(fg_mask), np.bitwise_not(ground_truth)).sum()
+
+        if FP > 0.9*fg_mask.shape[0]*fg_mask.shape[1]:
+            return
+
+        precision = TP / (TP + FP) if (TP+FP) > 0  else 0
+        recall = TP / (TP + FN) if (TP+FN) > 0  else 0
+        f1_score = 2*precision*recall / (precision+recall) if (precision+recall)>0 else 0
+        accuracy = (TP+TN) / (TP+FP+FN+TN) if (TP+FP+FN+TN) > 0 else 0
+
         self.process_time += t
-        self.f1_score += f1
-        self.precision += pre
-        self.recall += rec
-        self.accuracy += acc
+        self.f1_score += f1_score
+        self.precision += precision
+        self.recall += recall
+        self.accuracy += accuracy
         self.count += 1
 
     def avg(self) -> tuple[float, float, float, float, float]:
@@ -81,36 +97,21 @@ class Tester:
         return fg_mask
     
     @staticmethod                                                                                                  # Method that belongs to a class rather than any specific instance of that class
-    def compare(fg_mask: np.ndarray, ground_truth: Optional[np.ndarray]) -> tuple[np.ndarray, int, int, int, int]: # Function to compare result with ground truth
+    def colorize(fg_mask: np.ndarray, ground_truth: Optional[np.ndarray]) -> tuple[np.ndarray, int, int, int, int]: # Function to compare result with ground truth
         if ground_truth is None:                                                                                   # Ground truth is a binary mask of the foreground
             return cv2.cvtColor(fg_mask, cv2.COLOR_GRAY2BGR), 0, 0, 0, 0                                           # Convert the binary mask to colour
         
         fg_mask_color = np.zeros((*fg_mask.shape, 3), dtype=np.uint8)
 
-        true_positives = cv2.bitwise_and(fg_mask, ground_truth)                                                    # Computing true positives
+        both_positives = cv2.bitwise_and(fg_mask, ground_truth)                                                    # Computing true positives
         false_positives = cv2.bitwise_and(fg_mask, cv2.bitwise_not(ground_truth))                                  # Computing false positives
         false_negatives = cv2.bitwise_and(ground_truth, cv2.bitwise_not(fg_mask))                                  # Computing false negatives
-        true_negatives = cv2.bitwise_and(cv2.bitwise_not(fg_mask), cv2.bitwise_not(ground_truth))                  # Computing true negatives
 
-        fg_mask_color[true_positives > 0] = [0, 255, 0]                                                            # Colouring the true positives green
+        fg_mask_color[both_positives > 0] = [0, 255, 0]                                                            # Colouring the true positives green
         fg_mask_color[false_positives > 0] = [255, 0, 0]                                                           # Colouring the false positives red
         fg_mask_color[false_negatives > 0] = [0, 0, 255]                                                           # Colouring the false negatives blue
 
-        total_tp = true_positives.sum() // 255                                                                     # Computing total true positives
-        total_fp = false_positives.sum() // 255                                                                    # Computing total false positives
-        total_fn = false_negatives.sum() // 255                                                                    # Computing total false negatives
-        total_tn = true_negatives.sum() // 255                                                                     # Computing total true negatives
-
-        if total_fp > 0.9*fg_mask.shape[0]*fg_mask.shape[1]:
-            total_tp = total_fp
-            total_fp = 0
-
-        precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0                            # Calculating precision
-        recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0                               # Calculating recall
-        f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0                 # Calculating f1_score
-        accuracy = (total_tp + total_tn) / (total_tp + total_fp + total_fn + total_tn)                              # Calculating accuracy
-
-        return fg_mask_color, precision, recall, f1_score, accuracy
+        return fg_mask_color
     
     @staticmethod
     def load_video(video_path: str, ground_truth_path: Optional[str] = None) -> Generator[np.ndarray, None, None]: # Function to load video frame by frame
@@ -173,9 +174,9 @@ class Tester:
                 t1 = perf_counter()                                                                         # Start time
                 fg_mask = self.apply(frame)                                                                 # Compute and apply foreground mask
                 t2 = perf_counter()                                                                         # End time
-                fg_mask_color, precision, recall, f1, accuracy = self.compare(fg_mask, ground_truth)        # Comparing result with ground truth
+                fg_mask_color = self.colorize(fg_mask, ground_truth)        # Comparing result with ground truth
                 
-                metrics.add(t2-t1, f1, precision, recall, accuracy)
+                metrics.score(t2-t1, fg_mask, ground_truth)
 
                 if show_fg:
                     fg_mask_color = cv2.bitwise_and(frame, frame, mask = fg_mask)
