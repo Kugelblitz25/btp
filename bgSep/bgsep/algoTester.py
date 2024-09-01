@@ -24,13 +24,13 @@ class Metrics:
         self.accuracy = 0
         self.count = 0
 
-    def add(self, t: float, f1: float, pre: float, rec: float, acc: float) -> None:
+    def add(self, t: float, f1: float, pre: float, rec: float, acc: float,flag:bool) -> None:
         self.process_time += t
         self.f1_score += f1
         self.precision += pre
         self.recall += rec
         self.accuracy += acc
-        self.count += 1
+        self.count += flag
 
     def avg(self) -> tuple[float, float, float, float, float]:
         if self.count == 0 or self.process_time == 0:
@@ -81,7 +81,7 @@ class Tester:
         return fg_mask
     
     @staticmethod                                                                                                  # Method that belongs to a class rather than any specific instance of that class
-    def compare(fg_mask: np.ndarray, ground_truth: Optional[np.ndarray]) -> tuple[np.ndarray, int, int, int, int]: # Function to compare result with ground truth
+    def compare(fg_mask: np.ndarray, ground_truth: Optional[np.ndarray]) -> tuple[np.ndarray, int, int, int, int, bool]: # Function to compare result with ground truth
         if ground_truth is None:                                                                                   # Ground truth is a binary mask of the foreground
             return cv2.cvtColor(fg_mask, cv2.COLOR_GRAY2BGR), 0, 0, 0, 0                                           # Convert the binary mask to colour
         
@@ -109,8 +109,8 @@ class Tester:
         recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0                               # Calculating recall
         f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0                 # Calculating f1_score
         accuracy = (total_tp + total_tn) / (total_tp + total_fp + total_fn + total_tn)                              # Calculating accuracy
-
-        return fg_mask_color, precision, recall, f1_score, accuracy
+        flag= True if (total_tp+total_fn)>0 else False
+        return fg_mask_color, precision, recall, f1_score, accuracy,flag
     
     @staticmethod
     def load_video(video_path: str, ground_truth_path: Optional[str] = None) -> Generator[np.ndarray, None, None]: # Function to load video frame by frame
@@ -173,9 +173,9 @@ class Tester:
                 t1 = perf_counter()                                                                         # Start time
                 fg_mask = self.apply(frame)                                                                 # Compute and apply foreground mask
                 t2 = perf_counter()                                                                         # End time
-                fg_mask_color, precision, recall, f1, accuracy = self.compare(fg_mask, ground_truth)        # Comparing result with ground truth
+                fg_mask_color, precision, recall, f1, accuracy,flag = self.compare(fg_mask, ground_truth)        # Comparing result with ground truth
                 
-                metrics.add(t2-t1, f1, precision, recall, accuracy)
+                metrics.add(t2-t1, f1, precision, recall, accuracy,flag)
 
                 if show_fg:
                     fg_mask_color = cv2.bitwise_and(frame, frame, mask = fg_mask)
