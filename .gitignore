@@ -1,0 +1,4 @@
+videos/
+bgsep/rpca.py
+__pycache__
+poetry.lock

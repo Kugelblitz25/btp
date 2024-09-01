@@ -1,12 +1,13 @@
 [tool.poetry]
-name = "bgSep"
+name = "btp"
 version = "0.1.0"
-description = ""
+description = "Machine Learning based Video Surveillance"
 authors = ["Kugelblitz25 <vighneshnayak203@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 opencv-contrib-python = "^4.10.0"
+matplotlib = "^3.9.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
