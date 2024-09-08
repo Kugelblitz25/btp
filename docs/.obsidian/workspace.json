@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "index.md",
+                "file": "Machine Learning System Design.md",
                 "mode": "preview",
                 "source": false
               }
@@ -81,8 +81,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "6d697c29b2be9fa7",
@@ -98,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "index.md",
+                "file": "Machine Learning System Design.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "index.md",
+                "file": "Machine Learning System Design.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "index.md"
+                "file": "Machine Learning System Design.md"
               }
             }
           }
@@ -160,8 +159,8 @@
   },
   "active": "2863cb7c7b22dcdf",
   "lastOpenFiles": [
-    "Machine Learning System Design.md",
     "index.md",
+    "Machine Learning System Design.md",
     "Motion Detection.md",
     "Background Separation.md",
     "Robust Principle Component Analysis.md",

@@ -24,7 +24,7 @@ The current implementation includes:
 
 ## To-Do
 ---
-- [ ] Implement [[Robust Principle Component Analysis]].
+- [ ] Implement [Robust Principle Component Analysis](Robust%20Principle%20Component%20Analysis.md).
 - [ ] Explain the working of pre-implemented algorithms.
 - [ ] Check for other algorithms and ML models for the same.
 - [ ] Fine tune the hyperparameters for above algorithms
