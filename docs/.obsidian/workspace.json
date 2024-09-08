@@ -8,12 +8,24 @@
         "type": "tabs",
         "children": [
           {
-            "id": "c544698b944eedfe",
+            "id": "2863cb7c7b22dcdf",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Robust Principle Component Analysis.md",
+                "file": "index.md",
+                "mode": "preview",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "206ad258e74f0093",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Machine Learning System Design.md",
                 "mode": "preview",
                 "source": false
               }
@@ -69,7 +81,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "6d697c29b2be9fa7",
@@ -85,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Robust Principle Component Analysis.md",
+                "file": "index.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Robust Principle Component Analysis.md",
+                "file": "index.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Robust Principle Component Analysis.md"
+                "file": "index.md"
               }
             }
           }
@@ -145,14 +158,17 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "ca82eeecef23200a",
+  "active": "2863cb7c7b22dcdf",
   "lastOpenFiles": [
+    "Machine Learning System Design.md",
+    "index.md",
+    "Motion Detection.md",
+    "Background Separation.md",
+    "Robust Principle Component Analysis.md",
     "_config.yml~",
     "4913",
     "_layouts/default.html",
     "_layouts",
-    "index.md",
-    "Robust Principle Component Analysis.md",
     "Papers/Online_Robust_Principal_Component_Analysis_with_Change_Point_Detection.pdf",
     "Papers/Online_Tensor_Robust_Principal_Component_Analysis.pdf",
     "Papers/Incremental_gradient_on_the_Grassmannian_for_online_foreground_and_background_separation_in_subsampled_video.pdf",
@@ -161,7 +177,6 @@
     "Robust.md",
     "vhg.md",
     "_config.yml",
-    "notes",
     "_templates/topicNotes.md",
     "_templates/courseMain.md",
     "_templates/classNotes.md"
