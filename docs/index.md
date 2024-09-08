@@ -22,13 +22,13 @@ tags:
 
 ## POA
 ---
-Our initial plan was to use [background separation](Background%20Separation.md) algorithms to extract the moving foreground to simplify the further image processing tasks. Then use machine learning based models to identify the different parts and features from the humans in foreground for reidentification. 
+Our initial plan was to use [background separation](Background%20Separation) algorithms to extract the moving foreground to simplify the further image processing tasks. Then use machine learning based models to identify the different parts and features from the humans in foreground for reidentification. 
 There are several problems with this approach:
 -  Foreground is irregular in shape, hence dimensions of the image to be processed does not change just the information does.
 - To identify the humans in the image we still need a ML model as background separation identifies everything that moves
 
-So on prof's suggestion, we changed our plans to use background separation. We are currently using a difference based [motion detection](Motion%20Detection.md) to identify the frames in which motion occurs. We then use models like **YOLOv8** to identify the different objects in the frame, then pass the bounding box of each human in that frame reidentification and storage.
-This approach requires significant [system design](Machine%20Learning%20System%20Design.md) as running ml models takes much longer time in comparison to video recording. We need to do asynchronous handling of each frame. This requires implementation of message queue's like **RabbitMQ**, **Reddis** or **Apache Kafka**. We can use **Celery** for this purpose. A simpler approach is to use some thing like **ThreadPoolExecutor** or **asyncio** in python. But these have limitations in terms of number of tasks that can be performed simultaneously and getting results and status of process and fault tolerance.
+So on prof's suggestion, we changed our plans to use background separation. We are currently using a difference based [motion detection](Motion%20Detection) to identify the frames in which motion occurs. We then use models like **YOLOv8** to identify the different objects in the frame, then pass the bounding box of each human in that frame reidentification and storage.
+This approach requires significant [system design](Machine%20Learning%20System%20Design) as running ml models takes much longer time in comparison to video recording. We need to do asynchronous handling of each frame. This requires implementation of message queue's like **RabbitMQ**, **Reddis** or **Apache Kafka**. We can use **Celery** for this purpose. A simpler approach is to use some thing like **ThreadPoolExecutor** or **asyncio** in python. But these have limitations in terms of number of tasks that can be performed simultaneously and getting results and status of process and fault tolerance.
 
 | Feature                    | ThreadPoolExecutor | asyncio            | Celery            | Pure Message Queue             |
 | -------------------------- | ------------------ | ------------------ | ----------------- | ------------------------------ |
