@@ -2,18 +2,20 @@ import cv2
 from ultralytics import YOLO
 from deep_sort_realtime.deepsort_tracker import DeepSort
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
-MODEL_PATH = "yolov8n.pt"  # Make sure to download this model
-FACE_MODEL_PATH = "yolov8n-pose.pt"
-VIDEO_PATH = "videos/ncair.mp4"
-CONFIDENCE_THRESHOLD = 0.3
-MAX_AGE = 30
-NN_BUDGET = 100
+MODEL_PATH = "yolov8n.pt"
+VIDEO_PATH = "D:/Downloads/V1.mp4"
+CONFIDENCE_THRESHOLD = 0.7
+MAX_AGE = 20
+NN_BUDGET = 60
+SIMILARITY_THRESHOLD = 0.7
 
-face_model = YOLO(FACE_MODEL_PATH)
+# Dictionary to store unique person embeddings and their track IDs
+person_database = {}
 
 def load_model():
-    return YOLO(MODEL_PATH)
+    return YOLO(MODEL_PATH, verbose=False)
 
 def initialize_tracker():
     return DeepSort(max_age=MAX_AGE, nn_budget=NN_BUDGET)
@@ -26,7 +28,7 @@ def process_detections(results, confidence_threshold):
             conf = float(box.conf[0])
             if conf > confidence_threshold:
                 x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
-                detections.append([[x1, y1, x2-x1, y2-y1], conf])
+                detections.append([[x1, y1, x2 - x1, y2 - y1], conf])
     return detections
 
 def estimate_face_from_keypoints(img):
@@ -74,6 +76,28 @@ def draw_tracks_and_faces(frame, tracks):
             cv2.putText(frame, 'Face', (fx, fy-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         
     
+
+        # Get the appearance feature (embedding) of the current track
+        current_feature = np.array(track.features).reshape(1, -1)
+
+        # Check if this track's feature is already in the person database
+        reidentified = False
+        for existing_id, existing_feature in person_database.items():
+            similarity = cosine_similarity(existing_feature, current_feature)[0][0]
+            if similarity > SIMILARITY_THRESHOLD and existing_id != track_id:
+                reidentified = True
+                print(f"Reidentified Track {track_id} as existing Track {existing_id}")
+                track_id = existing_id
+                break
+
+        if not reidentified:
+            # Add the new track to the person database
+            person_database[track_id] = current_feature
+
+        # Draw bounding box and track ID
+        cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (0, 255, 0), 2)
+        cv2.putText(frame, f'ID: {track_id}', (int(bbox[0]), int(bbox[1] - 10)), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
     return frame
 
 def main():
@@ -98,6 +122,7 @@ def main():
     
     cap.release()
     cv2.destroyAllWindows()
+    print("Final tracked IDs:", person_database.keys())
 
 if __name__ == "__main__":
     main()
