@@ -4,7 +4,7 @@ from deep_sort_realtime.deepsort_tracker import DeepSort
 import numpy as np
 
 MODEL_PATH = "yolov8n.pt"
-VIDEO_PATH = "D:/Downloads/op_vd_4.mp4" 
+VIDEO_PATH = "../test videos/test_vid_from_ncair_1.mp4"
 CONFIDENCE_THRESHOLD = 0.5
 MAX_AGE = 30
 NN_BUDGET = 100
