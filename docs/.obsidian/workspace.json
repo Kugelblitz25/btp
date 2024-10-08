@@ -13,19 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Motion Detection.md",
-                "mode": "preview",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "206ad258e74f0093",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Machine Learning System Design.md",
+                "file": "index.md",
                 "mode": "preview",
                 "source": false
               }
@@ -97,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Motion Detection.md",
+                "file": "index.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Motion Detection.md",
+                "file": "index.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Motion Detection.md"
+                "file": "index.md"
               }
             }
           }
@@ -159,11 +147,13 @@
   },
   "active": "2863cb7c7b22dcdf",
   "lastOpenFiles": [
-    "Machine Learning System Design.md",
-    "Background Separation.md",
-    "Motion Detection.md",
-    "Robust Principle Component Analysis.md",
+    "Celery.md",
     "index.md",
+    "Machine Learning System Design.md",
+    "Robust Principle Component Analysis.md",
+    "Motion Detection.md",
+    "Papers/Survey_Of_Detection_Based_MOT.pdf",
+    "Background Separation.md",
     "_config.yml~",
     "4913",
     "_layouts/default.html",
@@ -175,7 +165,6 @@
     "New folder",
     "Robust.md",
     "vhg.md",
-    "_config.yml",
     "_templates/topicNotes.md",
     "_templates/courseMain.md",
     "_templates/classNotes.md"

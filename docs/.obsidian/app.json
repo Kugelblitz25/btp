@@ -16,5 +16,10 @@
   "attachmentFolderPath": "./attachments",
   "newLinkFormat": "relative",
   "useMarkdownLinks": false,
-  "readableLineLength": true
+  "readableLineLength": true,
+  "spellcheckDictionary": [
+    "WebSockets",
+    "WebSocket",
+    "WebSokets"
+  ]
 }
