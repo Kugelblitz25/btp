@@ -3,13 +3,15 @@ import cv2
 import numpy as np
 from pathlib import Path
 from sklearn.metrics.pairwise import cosine_similarity
+from collections import defaultdict
 
 
 class PersonTracker:
     def __init__(self, args):
         self.args = args
         self.person_database = {}
-
+        self.similarity_dict=defaultdict(int)
+    
     def load_model(self):
         from ultralytics import YOLO
         model_path = Path("models") / self.args.model
@@ -61,11 +63,12 @@ class PersonTracker:
             reidentified = False
             for existing_id, existing_feature in self.person_database.items():
                 similarity = cosine_similarity(existing_feature, current_feature)[0][0]
-                if similarity > self.args.similarity_threshold and existing_id != track_id:
-                    reidentified = True
-                    print(f"Reidentified Track {track_id} as existing Track {existing_id}")
-                    track_id = existing_id
-                    break
+                if similarity > self.args.similarity_threshold :
+                    self.similarity_dict[(track_id,existing_id)]+=1
+                    if self.similarity_dict[(track_id,existing_id)]>10:
+                        reidentified=True
+                        track_id=existing_id
+                        break
 
             if not reidentified:
                 self.person_database[track_id] = current_feature
@@ -124,12 +127,12 @@ class PersonTracker:
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Person Tracker with YOLO and DeepSort")
     parser.add_argument("--model", type=str, default="yolov8s-pose.pt", help="Path to the YOLO model")
-    parser.add_argument("--video", type=str, default="videos/ncair.mp4", help="Path to the input video")
+    parser.add_argument("--video", type=str, default="test videos/test_vid_from_ncair_1.mp4", help="Path to the input video")
     parser.add_argument("--output", type=str, default=None, help="Path to save the output video (optional)")
-    parser.add_argument("--confidence_threshold", type=float, default=0.6, help="Confidence threshold for detections")
+    parser.add_argument("--confidence_threshold", type=float, default=0.75, help="Confidence threshold for detections")
     parser.add_argument("--max_age", type=int, default=30, help="Maximum age for tracks in DeepSort")
     parser.add_argument("--nn_budget", type=int, default=100, help="NN budget for DeepSort")
-    parser.add_argument("--similarity_threshold", type=float, default=0.7, help="Similarity threshold for re-identification")
+    parser.add_argument("--similarity_threshold", type=float, default=0.75, help="Similarity threshold for re-identification")
     return parser.parse_args()
 
 if __name__ == "__main__":
