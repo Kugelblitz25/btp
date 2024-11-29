@@ -1,0 +1,7 @@
+{
+  "model": "yolov8s.pt",
+  "max_age": 30,
+  "nn_budget": 100,
+  "confidence_threshold": 0.75,
+  "similarity_threshold": 0.75
+}
