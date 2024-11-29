@@ -3,3 +3,4 @@ bgsep/rpca.py
 .venv/
 __pycache__
 poetry.lock
+FairMOT/models
