@@ -11,6 +11,7 @@ class PersonTracker:
         self.args = args
         self.person_database = {}
         self.similarity_dict = defaultdict(int)
+        self.init()
 
     def load_yolo_model(self):
         model_dir = Path(__file__).parent / "models"
