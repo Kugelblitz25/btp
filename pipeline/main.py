@@ -15,6 +15,9 @@ with Camera(vid_loc) as camera:
     for frame in camera.frames():
         results = tracker.track(frame)
         frame, results = parser.process_frame(frame, results)
-        cv2.imshow("vid", frame)
-        cv2.waitKey(10)
         print(results)
+        cv2.imshow("video", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+
+cv2.destroyAllWindows()

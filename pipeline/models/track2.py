@@ -26,7 +26,7 @@ class PersonTracker:
         else:
             print("Using CPU")
 
-        model = YOLO(model_path, verbose=False)
+        model = YOLO(model_path)
         return model.to(device)
 
     def process_tracks(self, results) -> list[dict]:
