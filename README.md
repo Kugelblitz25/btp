@@ -1,3 +1,7 @@
+# Model weights for action classification
+
+You can download the Modified ResNet50 weights here  : [Google Drive](https://drive.google.com/file/d/17cIIypzvXRlMo1fVcDBh2rGQVEsU5txx/view?usp=sharing)
+
 # FairMOT
 Multi-object tracking 
 
