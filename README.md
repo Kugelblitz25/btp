@@ -5,6 +5,7 @@
 # Model weights for action classification
 
 You can download the Modified ResNet50 weights here  : [Google Drive](https://drive.google.com/file/d/17cIIypzvXRlMo1fVcDBh2rGQVEsU5txx/view?usp=sharing)
+
 You can download the Modified ViT weights here  : [Google Drive](https://drive.google.com/file/d/10vCDEKm_epNsTqfxxRsrliW22V0lfKTz/view?usp=sharing)
 
 # FairMOT
