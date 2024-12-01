@@ -1,3 +1,7 @@
+# To utilize GPU for MediaPipe 
+  ```shell
+ set MEDIAPIPE_DISABLE_GPU=0
+  ```
 # Model weights for action classification
 
 You can download the Modified ResNet50 weights here  : [Google Drive](https://drive.google.com/file/d/17cIIypzvXRlMo1fVcDBh2rGQVEsU5txx/view?usp=sharing)
