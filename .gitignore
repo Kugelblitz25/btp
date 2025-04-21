@@ -9,3 +9,5 @@ weights
 yolo/.ipynb_checkpoints
 action_classification/VIT_weights.pth
 *.mp4
+*.pth
+*.pt
