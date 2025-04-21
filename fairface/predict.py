@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 import warnings
+
 warnings.filterwarnings("ignore")
 import torch
 import torch.nn as nn
@@ -8,11 +9,17 @@ import torchvision
 from torchvision import transforms
 import cv2
 
+
 def load_fairface():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model_fair_7 = torchvision.models.resnet34(pretrained=True)
     model_fair_7.fc = nn.Linear(model_fair_7.fc.in_features, 18)
-    model_fair_7.load_state_dict(torch.load("/home/hkavediya/BTP/btp/FairFace/res34_fair_align_multi_7_20190809.pt"))
+    model_fair_7.load_state_dict(
+        torch.load(
+            "fairface/res34_fair_align_multi_7_20190809.pt",
+            map_location=device,
+        )
+    )
     model_fair_7 = model_fair_7.to(device)
     return model_fair_7
 
@@ -21,17 +28,18 @@ def predict_age_gender_race(image, model_fair_7):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model_fair_7.eval()
 
-    img_transforms = transforms.Compose([
-        transforms.ToPILImage(),
-        transforms.Resize((224, 224)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
-
+    img_transforms = transforms.Compose(
+        [
+            transforms.ToPILImage(),
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+    )
 
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = img_transforms(image)
-    image = image.view(1, 3, 224, 224)  
+    image = image.view(1, 3, 224, 224)
     image = image.to(device)
 
     outputs = model_fair_7(image)
@@ -50,7 +58,11 @@ def predict_age_gender_race(image, model_fair_7):
     gender_pred = np.argmax(gender_score)
     age_pred = np.argmax(age_score)
 
-    return race_pred,age_pred, gender_pred, np.max(race_score), np.max(age_score), np.max(gender_score)
-
-
-
+    return (
+        race_pred,
+        age_pred,
+        gender_pred,
+        np.max(race_score),
+        np.max(age_score),
+        np.max(gender_score),
+    )
