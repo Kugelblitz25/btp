@@ -5,3 +5,6 @@ __pycache__
 poetry.lock
 data
 FairMOT/models
+weights
+yolo/.ipynb_checkpoints
+action_classification/VIT_weights.pth

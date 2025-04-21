@@ -8,11 +8,21 @@ requires-python = ">=3.10"
 dependencies = [
     "opencv-contrib-python>=4.10.0",
     "matplotlib>=3.9.2",
-    "ultralytics>=8.2.90",
     "deep-sort-realtime>=1.3.2",
     "scikit-learn>=1.5.2",
     "webcolors>=24.11.1",
     "mediapipe>=0.10.18",
     "psycopg2-binary>=2.9.10",
+    "glasses-detector>=0.1.1",
+    "faiss-gpu>=1.7.2",
+    "face-recognition>=1.3.0",
+    "realesrgan",
+    "huggingface-hub==0.25.2",
+    "fastapi>=0.115.12",
+    "ultralytics>=8.3.108",
+    "lap>=0.5.12",
 ]
+
+[tool.uv.sources]
+realesrgan = { git = "https://github.com/sberbank-ai/Real-ESRGAN.git" }
  

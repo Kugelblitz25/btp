@@ -138,13 +138,12 @@ class HumanProcessor:
             )
             lower_color = self.get_mode_color(lower_pts, person_frame)
 
-            # Extract face
-            face_bbox = [
-                x1,
-                y1,
-                x1 + min(lm_points["left_shoulder"][1], lm_points["right_shoulder"][1]),
-                y1 + h,
-            ]
+            face_bbox = [x1, 
+                         y1, 
+                         x2,  
+                         y1 + min(lm_points["left_shoulder"][1], lm_points["right_shoulder"][1])
+                         ]
+
 
             left_foot = [
                 lm_points["left_ankle"][0] + x1,
@@ -176,6 +175,7 @@ class HumanProcessor:
                     "left": left_foot,
                     "right": right_foot,
                 },
+                "bbox":bbox,
                 "face_bbox": face_bbox,
                 "confidence": conf,
             }

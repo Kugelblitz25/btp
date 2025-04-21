@@ -1,7 +1,7 @@
 import psycopg2
 
 def connect_db():
-    return psycopg2.connect(dbname="your_database", user="your_username", password="your_password", host="your_host", port="5432")
+    return psycopg2.connect(dbname="tsdb", user="tsdbadmin", password="twbnwtsaanybxcbd", host="efyjw8a4w9.wu5ui8n1r3.tsdb.cloud.timescale.com", port="36784")
 
 def insert_person(id, features, height, stride_length, gender, age, glasses, hairline_id):
     conn = connect_db()
