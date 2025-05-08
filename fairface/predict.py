@@ -59,9 +59,9 @@ def predict_age_gender_race(image, model_fair_7):
     age_pred = np.argmax(age_score)
 
     return (
-        race_pred,
-        age_pred,
-        gender_pred,
+        int(race_pred + 1),
+        int(age_pred + 1),
+        int(gender_pred + 1),
         np.max(race_score),
         np.max(age_score),
         np.max(gender_score),

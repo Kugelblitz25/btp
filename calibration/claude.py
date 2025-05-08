@@ -214,7 +214,7 @@ def test_undistortion_standard(image_path, mtx, dist, save_dir='calibration_resu
     dst = cv2.undistort(img, mtx, dist, None, newcameramtx)
     
     x, y, w, h = roi
-    dst = dst[y:y+h, x:x+w]
+    dst = dst #[y:y+h, x:x+w]
     
     cv2.imwrite(os.path.join(save_dir, 'standard_undistorted.jpg'), dst)
     cv2.imwrite(os.path.join(save_dir, 'original.jpg'), img)
@@ -222,25 +222,25 @@ def test_undistortion_standard(image_path, mtx, dist, save_dir='calibration_resu
     print(f"Original and standard-undistorted images saved to {save_dir}")
 
 if __name__ == "__main__":
-    video_path = 'output2.mp4'
-    checkerboard_size = (11, 7)
-    square_size = 2.4
+    video_path = 'output.avi'
+    checkerboard_size = (5, 3)
+    square_size = 5
     
     # Try fisheye calibration first
-    print("Attempting fisheye calibration (for extreme wide-angle/fisheye lenses)...")
-    rms, K, D, _, _ = calibrate_fisheye_camera(
-        video_path, checkerboard_size, square_size)
+    # print("Attempting fisheye calibration (for extreme wide-angle/fisheye lenses)...")
+    # rms, K, D, _ = calibrate_fisheye_camera(
+    #     video_path, checkerboard_size, square_size)
     
-    # If fisheye succeeds, test undistortion with fisheye model
-    if K is not None:
-        cap = cv2.VideoCapture(video_path)
-        ret, frame = cap.read()
-        cap.release()
+    # # If fisheye succeeds, test undistortion with fisheye model
+    # if K is not None:
+    #     cap = cv2.VideoCapture(video_path)
+    #     ret, frame = cap.read()
+    #     cap.release()
         
-        if ret:
-            test_frame_path = 'calibration_results/test_frame.jpg'
-            cv2.imwrite(test_frame_path, frame)
-            test_undistortion_fisheye(test_frame_path, K, D)
+    #     if ret:
+    #         test_frame_path = 'calibration_results/test_frame.jpg'
+    #         cv2.imwrite(test_frame_path, frame)
+    #         test_undistortion_fisheye(test_frame_path, K, D)
     
     # Also try standard calibration with extended distortion coefficients
     print("\nAttempting standard calibration with extended coefficients (for wide-angle lenses)...")
